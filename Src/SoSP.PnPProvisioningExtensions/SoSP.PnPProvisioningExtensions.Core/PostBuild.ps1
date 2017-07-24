@@ -1,0 +1,33 @@
+param($ProjectDir, $ConfigurationName, $TargetDir, $TargetFileName, $SolutionDir)
+
+$documentsFolder = [environment]::getfolderpath("mydocuments");
+if($ConfigurationName -like "Debug15")
+{
+    $DestinationFolder = "$documentsFolder\WindowsPowerShell\Modules\SharePointPnPPowerShell2013"
+} elseif($ConfigurationName -like "Debug16")
+{
+    $DestinationFolder = "$documentsFolder\WindowsPowerShell\Modules\SharePointPnPPowerShell2016"
+} else {
+    $DestinationFolder = "$documentsFolder\WindowsPowerShell\Modules\SharePointPnPPowerShellOnline"
+}
+    
+# Module folder there?
+if(Test-Path $DestinationFolder)
+{
+    # Yes, empty it
+    Remove-Item $DestinationFolder\*
+} else {
+    # No, create it
+    Write-Host "Creating target folder: $DestinationFolder"
+    New-Item -Path $DestinationFolder -ItemType Directory -Force >$null # Suppress output
+}
+
+Write-Host "Copying files from $TargetDir to $DestinationFolder"
+Try {
+    Copy-Item "$TargetDir\*.dll" -Destination "$DestinationFolder"
+    Copy-Item "$TargetDir\*help.xml" -Destination "$DestinationFolder"  
+}
+Catch
+{
+    exit 1
+}
