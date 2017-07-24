@@ -36,15 +36,14 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
             if (template.Lists?.Count > 0)
             {
-                ;
-                Dictionary<string, string> metadatanavigationSettings;
-                metadatanavigationSettings = new Dictionary<string, string>();
+                var metadatanavigationSettings = new Dictionary<string, string>();
                 var allLists = GetSiteLists(ctx);
 
                 foreach (var list in allLists)
                 {
                     if (list.PropertyBagContainsKey(CLIENT_MOSS_METADATANAVIGATIONSETTINGS))
                     {
+                        scope.LogInfo("Exporting MetadataNavigationSettings from list " + list.Title);
                         metadatanavigationSettings.Add(list.Title, list.GetPropertyBagValueString(CLIENT_MOSS_METADATANAVIGATIONSETTINGS, null));
                     }
                 }
@@ -112,6 +111,8 @@ namespace SoSP.PnPProvisioningExtensions.Core
                     var list = allLists.FirstOrDefault(l => l.Title == listName);
                     list.SetPropertyBagValue(CLIENT_MOSS_METADATANAVIGATIONSETTINGS, propertyValue);
                     list.Update();
+                    scope.LogInfo("Imported MetadataNavigationSettings to list " + list.Title);
+
                 }
                 ctx.ExecuteQuery();
             }
