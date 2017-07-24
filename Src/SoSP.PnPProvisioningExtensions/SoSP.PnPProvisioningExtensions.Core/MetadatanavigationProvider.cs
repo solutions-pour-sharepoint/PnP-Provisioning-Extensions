@@ -4,8 +4,10 @@ using OfficeDevPnP.Core.Framework.Provisioning.Extensibility;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.TokenDefinitions;
+using SoSP.PnPProvisioningExtensions.Core.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
@@ -34,17 +36,10 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
             if (template.Lists?.Count > 0)
             {
-                var web = ctx.Web;
-                var allLists = web.Lists;
-                var metadatanavigationSettings = new Dictionary<string, string>();
-                ctx.Load(
-                    allLists,
-                    lists => lists.Include(
-                        l => l.Title,
-                        l => l.RootFolder.Properties                       
-                        )
-                    );
-                ctx.ExecuteQuery();
+                ;
+                Dictionary<string, string> metadatanavigationSettings;
+                metadatanavigationSettings = new Dictionary<string, string>();
+                var allLists = GetSiteLists(ctx);
 
                 foreach (var list in allLists)
                 {
@@ -54,19 +49,40 @@ namespace SoSP.PnPProvisioningExtensions.Core
                     }
                 }
 
-                var serializer = new DataContractSerializer(typeof(Dictionary<string, string>));
-
-                var sb = new StringBuilder();
-
-                using (var xtw = XmlWriter.Create(sb))
-                {
-                    serializer.WriteObject(xtw, metadatanavigationSettings);
-                }
-                extensibilityHandler.Configuration = sb.ToString();
+                extensibilityHandler.Configuration = SerializeData(metadatanavigationSettings);
                 template.ExtensibilityHandlers.Add(extensibilityHandler);
             }
 
             return template;
+        }
+
+        private static ListCollection GetSiteLists(ClientContext ctx)
+        {
+            var web = ctx.Web;
+            var allLists = web.Lists;
+            ctx.Load(
+                allLists,
+                lists => lists.Include(
+                    l => l.Title,
+                    l => l.RootFolder.Properties
+                    )
+                );
+            ctx.ExecuteQuery();
+            return allLists;
+        }
+
+        private static string SerializeData(Dictionary<string, string> metadatanavigationSettings)
+        {
+            var serializer = new DataContractSerializer(typeof(Dictionary<string, string>));
+
+            var sb = new StringBuilder();
+
+            using (var xtw = XmlWriter.Create(sb))
+            {
+                serializer.WriteObject(xtw, metadatanavigationSettings);
+            }
+
+            return sb.ToString();
         }
 
         public IEnumerable<TokenDefinition> GetTokens(ClientContext ctx, ProvisioningTemplate template, string configurationData)
@@ -74,8 +90,31 @@ namespace SoSP.PnPProvisioningExtensions.Core
             yield break;
         }
 
-        public void Provision(ClientContext ctx, ProvisioningTemplate template, ProvisioningTemplateApplyingInformation applyingInformation, TokenParser tokenParser, PnPMonitoredScope scope, string configurationData)
+        public void Provision(
+            ClientContext ctx,
+            ProvisioningTemplate template,
+            ProvisioningTemplateApplyingInformation applyingInformation,
+            TokenParser tokenParser,
+            PnPMonitoredScope scope,
+            string configurationData
+            )
         {
+            if (string.IsNullOrWhiteSpace(configurationData)) return;
+
+            var metadataNavigationSettings = configurationData.FromXml<Dictionary<string, string>>();
+
+            if (metadataNavigationSettings.Count > 0)
+            {
+                var allLists = GetSiteLists(ctx);
+                foreach (var listName in metadataNavigationSettings.Keys)
+                {
+                    var propertyValue = tokenParser.ParseString(metadataNavigationSettings[listName]);
+                    var list = allLists.FirstOrDefault(l => l.Title == listName);
+                    list.SetPropertyBagValue(CLIENT_MOSS_METADATANAVIGATIONSETTINGS, propertyValue);
+                    list.Update();
+                }
+                ctx.ExecuteQuery();
+            }
         }
     }
 }
