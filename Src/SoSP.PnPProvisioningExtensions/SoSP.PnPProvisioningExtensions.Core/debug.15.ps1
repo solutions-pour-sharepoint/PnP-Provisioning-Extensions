@@ -1,8 +1,8 @@
-$moduleAssembly = [System.Reflection.Assembly]::LoadFrom("$([Environment]::GetFolderPath('MyDocuments'))\WindowsPowerShell\Modules\SharePointPnPPowerShellOnline\OfficeDevPnP.Core.dll")
+$moduleAssembly = [System.Reflection.Assembly]::LoadFrom("$([Environment]::GetFolderPath('MyDocuments'))\WindowsPowerShell\Modules\SharePointPnPPowerShell2013\OfficeDevPnP.Core.dll")
 
 Import-Module -Assembly $moduleAssembly
 
-Connect-PnPOnline http://tenant.sharepoint.com/sites/somesite
+Connect-PnPOnline -CurrentCredentials http://sbdev02/sites/pnpsource
 
 Add-Type -Path SoSP.PnPProvisioningExtensions.Core.dll
 

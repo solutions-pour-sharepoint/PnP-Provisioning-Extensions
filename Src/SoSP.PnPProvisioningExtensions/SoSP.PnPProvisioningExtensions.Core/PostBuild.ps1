@@ -1,5 +1,5 @@
 param($ProjectDir, $ConfigurationName, $TargetDir, $TargetFileName, $SolutionDir)
-
+<#
 $documentsFolder = [environment]::getfolderpath("mydocuments");
 if($ConfigurationName -like "Debug15")
 {
@@ -11,16 +11,10 @@ if($ConfigurationName -like "Debug15")
     $DestinationFolder = "$documentsFolder\WindowsPowerShell\Modules\SharePointPnPPowerShellOnline"
 }
     
-# Module folder there?
-if(Test-Path $DestinationFolder)
-{
-    # Yes, empty it
-    Remove-Item $DestinationFolder\*
-} else {
-    # No, create it
-    Write-Host "Creating target folder: $DestinationFolder"
-    New-Item -Path $DestinationFolder -ItemType Directory -Force >$null # Suppress output
-}
+
+Write-Host "Creating target folder: $DestinationFolder"
+New-Item -Path $DestinationFolder -ItemType Directory -Force >$null # Suppress output
+
 
 Write-Host "Copying files from $TargetDir to $DestinationFolder"
 Try {
@@ -31,3 +25,4 @@ Catch
 {
     exit 1
 }
+#>
