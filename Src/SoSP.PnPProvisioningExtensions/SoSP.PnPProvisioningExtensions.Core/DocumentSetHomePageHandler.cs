@@ -1,4 +1,5 @@
 ﻿using Microsoft.SharePoint.Client;
+using OfficeDevPnP.Core;
 using OfficeDevPnP.Core.Diagnostics;
 using OfficeDevPnP.Core.Entities;
 using OfficeDevPnP.Core.Framework.Provisioning.Extensibility;
@@ -59,18 +60,20 @@ namespace SoSP.PnPProvisioningExtensions.Core
                         allContentTypes,
                         col => col.Include(
                             ct => ct.Id,
-                            ct => ct.SchemaXml                            
+                            ct => ct.SchemaXml
                             )
                         );
                     ctx.ExecuteQuery();
 
                     var data = new Data();
 
-                    foreach (var ct in allContentTypes)
+                    foreach (var spct in allContentTypes)
                     {
-                        if (template.ContentTypes.Any(tct => tct.Id == ct.Id.StringValue))
+                        if (
+                            spct.Id.StringValue.StartsWith(BuiltInContentTypeId.DocumentSet, StringComparison.Ordinal) 
+                            && template.ContentTypes.Any(tct => tct.Id == spct.Id.StringValue))
                         {
-                            var docsetWelcomePage = GetWelcomePage(web, ct);
+                            var docsetWelcomePage = GetWelcomePage(web, spct);
 
                             var dshpwp = web.GetWebParts(docsetWelcomePage);
 
@@ -83,7 +86,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
                             });
 
                             data.Add(
-                                ct.Id.StringValue,
+                                spct.Id.StringValue,
                                 new WebPartDefinitionsList(wpData)
                             );
                         }
@@ -128,6 +131,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
                     allContentTypes,
                     col => col.Include(
                         ct => ct.Id,
+                        ct => ct.Name,
                         ct => ct.SchemaXml
                         )
                     );
@@ -138,6 +142,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
                     var spct = allContentTypes.FirstOrDefault(c => c.Id.StringValue == ct.Key);
                     if (spct != null)
                     {
+                        scope.LogInfo($"Start provisioning webparts in the homepage of the document set content type {spct.Name}");
                         var ctHp = GetWelcomePage(web, spct);
                         var siteRelativeUrl = ctHp.Substring(web.ServerRelativeUrl.Length).TrimStart('/');
 
@@ -145,6 +150,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
                         foreach (var wp in ct.Value)
                         {
+                            scope.LogInfo($"  Start provisioning webpart {wp.Title} in the homepage of the document set content type {spct.Name}");
                             var wpEntity = new WebPartEntity
                             {
                                 WebPartIndex = (int)wp.Order,
@@ -152,14 +158,22 @@ namespace SoSP.PnPProvisioningExtensions.Core
                                 WebPartXml = tokenParser.ParseString(wp.Contents),
                                 WebPartZone = wp.Zone
                             };
+
                             if (!existingWebParts.Any(w => w.WebPart.Title == wpEntity.WebPartTitle))
                             {
+                                scope.LogInfo($"Provisioning webpart {wp.Title}");
                                 web.AddWebPartToWebPartPage(
                                     wpEntity,
                                     siteRelativeUrl
                                     );
                             }
+                            else
+                            {
+                                scope.LogInfo($"Ignoring webpart {wp.Title}  because there's already one with this title.");
+                            }
                         }
+
+                        scope.LogInfo($"End provisioning webparts in the homepage of the document set content type {spct.Name}");
                     }
                     else
                     {
