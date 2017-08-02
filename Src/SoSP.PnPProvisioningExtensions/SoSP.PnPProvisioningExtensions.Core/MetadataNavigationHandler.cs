@@ -4,18 +4,14 @@ using OfficeDevPnP.Core.Framework.Provisioning.Extensibility;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.TokenDefinitions;
-using SoSP.PnPProvisioningExtensions.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Xml;
 
 namespace SoSP.PnPProvisioningExtensions.Core
 {
-    internal class MetadatanavigationProvider : IProvisioningExtensibilityHandler
+    internal class MetadataNavigationHandler : BaseHandler<Dictionary<string, string>>, IProvisioningExtensibilityHandler
     {
         private const string CLIENT_MOSS_METADATANAVIGATIONSETTINGS = "client_MOSS_MetadataNavigationSettings";
 
@@ -31,7 +27,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
             {
                 Assembly = Assembly.GetExecutingAssembly().FullName,
                 Enabled = true,
-                Type = typeof(MetadatanavigationProvider).FullName
+                Type = typeof(MetadataNavigationHandler).FullName
             };
 
             if (template.Lists?.Count > 0)
@@ -70,20 +66,6 @@ namespace SoSP.PnPProvisioningExtensions.Core
             return allLists;
         }
 
-        private static string SerializeData(Dictionary<string, string> metadatanavigationSettings)
-        {
-            var serializer = new DataContractSerializer(typeof(Dictionary<string, string>));
-
-            var sb = new StringBuilder();
-
-            using (var xtw = XmlWriter.Create(sb))
-            {
-                serializer.WriteObject(xtw, metadatanavigationSettings);
-            }
-
-            return sb.ToString();
-        }
-
         public IEnumerable<TokenDefinition> GetTokens(ClientContext ctx, ProvisioningTemplate template, string configurationData)
         {
             yield break;
@@ -100,7 +82,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
         {
             if (string.IsNullOrWhiteSpace(configurationData)) return;
 
-            var metadataNavigationSettings = configurationData.FromXml<Dictionary<string, string>>();
+            var metadataNavigationSettings = ParseData(configurationData);
 
             if (metadataNavigationSettings.Count > 0)
             {
@@ -112,7 +94,6 @@ namespace SoSP.PnPProvisioningExtensions.Core
                     list.SetPropertyBagValue(CLIENT_MOSS_METADATANAVIGATIONSETTINGS, propertyValue);
                     list.Update();
                     scope.LogInfo("Imported MetadataNavigationSettings to list " + list.Title);
-
                 }
                 ctx.ExecuteQuery();
             }
