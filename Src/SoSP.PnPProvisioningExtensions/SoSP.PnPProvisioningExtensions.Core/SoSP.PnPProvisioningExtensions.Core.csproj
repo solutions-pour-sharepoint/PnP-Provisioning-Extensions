@@ -249,7 +249,6 @@
   <ItemGroup>
     <Compile Include="BaseHandler.cs" />
     <Compile Include="DocumentSetHomePageHandler.cs" />
-    <Compile Include="Extensions\SerializationExtensions.cs" />
     <Compile Include="MetadataNavigationHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

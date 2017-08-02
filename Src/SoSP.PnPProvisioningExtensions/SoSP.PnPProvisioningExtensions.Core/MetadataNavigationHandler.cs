@@ -4,14 +4,10 @@ using OfficeDevPnP.Core.Framework.Provisioning.Extensibility;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.TokenDefinitions;
-using SoSP.PnPProvisioningExtensions.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Xml;
 
 namespace SoSP.PnPProvisioningExtensions.Core
 {
@@ -86,7 +82,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
         {
             if (string.IsNullOrWhiteSpace(configurationData)) return;
 
-            var metadataNavigationSettings = configurationData.FromXml<Dictionary<string, string>>();
+            var metadataNavigationSettings = ParseData(configurationData);
 
             if (metadataNavigationSettings.Count > 0)
             {
