@@ -1,5 +1,5 @@
 param($ProjectDir, $ConfigurationName, $TargetDir, $TargetFileName, $SolutionDir)
-<#
+
 $documentsFolder = [environment]::getfolderpath("mydocuments");
 if($ConfigurationName -like "Debug15")
 {
@@ -18,11 +18,9 @@ New-Item -Path $DestinationFolder -ItemType Directory -Force >$null # Suppress o
 
 Write-Host "Copying files from $TargetDir to $DestinationFolder"
 Try {
-    Copy-Item "$TargetDir\*.dll" -Destination "$DestinationFolder"
-    Copy-Item "$TargetDir\*help.xml" -Destination "$DestinationFolder"  
+    Copy-Item "$TargetDir\SoSP.PnPProvisioningExtensions.Core.*" -Destination "$DestinationFolder"
 }
 Catch
 {
     exit 1
 }
-#>
