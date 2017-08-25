@@ -6,6 +6,6 @@ This project has been created to overcome some PnP Provisioning engine missing f
 # Documentation
 (Documentation not ready)
 
-# Contributin
+# Contributing
 
 Contribution are welcome, but contributing to the official [PnP Site Core repository](https://github.com/SharePoint/PnP-Sites-Core) is preferred. 
