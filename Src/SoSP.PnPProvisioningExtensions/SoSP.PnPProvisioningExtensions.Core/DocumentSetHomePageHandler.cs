@@ -15,7 +15,7 @@ using SPContentType = Microsoft.SharePoint.Client.ContentType;
 
 namespace SoSP.PnPProvisioningExtensions.Core
 {
-    public class DocumentSetHomePageHandler : BaseHandler<DocumentSetHomePageHandler.Data>, IProvisioningExtensibilityHandler
+    public class DocumentSetHomePageHandler : BaseHandler<DocumentSetHomePageHandler.Data>
     {
         #region Serializable datatype (to have a more readable xml)
 
@@ -38,7 +38,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
         #endregion Serializable datatype (to have a more readable xml)
 
-        public ProvisioningTemplate Extract(
+        public override ProvisioningTemplate Extract(
             ClientContext ctx,
             ProvisioningTemplate template,
             ProvisioningTemplateCreationInformation creationInformation,
@@ -102,13 +102,9 @@ namespace SoSP.PnPProvisioningExtensions.Core
                 throw;
             }
         }
+        
 
-        public IEnumerable<TokenDefinition> GetTokens(ClientContext ctx, ProvisioningTemplate template, string configurationData)
-        {
-            yield break;
-        }
-
-        public void Provision(
+        public override void Provision(
             ClientContext ctx,
             ProvisioningTemplate template,
             ProvisioningTemplateApplyingInformation applyingInformation,

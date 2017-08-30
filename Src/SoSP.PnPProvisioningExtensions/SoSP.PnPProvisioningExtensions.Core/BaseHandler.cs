@@ -1,14 +1,19 @@
 ﻿using Microsoft.SharePoint.Client;
+using OfficeDevPnP.Core.Framework.Provisioning.Extensibility;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using OfficeDevPnP.Core.Diagnostics;
+using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
+using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.TokenDefinitions;
+using System.Collections.Generic;
 
 namespace SoSP.PnPProvisioningExtensions.Core
 {
-    public abstract class BaseHandler<TData>
+    public abstract class BaseHandler<TData> : IProvisioningExtensibilityHandler
     {
         protected static string SerializeData(TData data)
         {
@@ -93,6 +98,14 @@ namespace SoSP.PnPProvisioningExtensions.Core
             input = input.Replace(web.Id.ToString(), "{siteid}");
 
             return result;
+        }
+
+        public abstract void Provision(ClientContext ctx, ProvisioningTemplate template, ProvisioningTemplateApplyingInformation applyingInformation, TokenParser tokenParser, PnPMonitoredScope scope, string configurationData);
+        public abstract ProvisioningTemplate Extract(ClientContext ctx, ProvisioningTemplate template, ProvisioningTemplateCreationInformation creationInformation, PnPMonitoredScope scope, string configurationData);
+
+        public virtual IEnumerable<TokenDefinition> GetTokens(ClientContext ctx, ProvisioningTemplate template, string configurationData)
+        {
+            yield break;
         }
     }
 }
