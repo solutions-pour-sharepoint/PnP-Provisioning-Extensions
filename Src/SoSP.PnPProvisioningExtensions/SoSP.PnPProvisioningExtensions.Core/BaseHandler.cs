@@ -10,6 +10,7 @@ using OfficeDevPnP.Core.Diagnostics;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.TokenDefinitions;
 using System.Collections.Generic;
+using OfficeDevPnP.Core.Extensions;
 
 namespace SoSP.PnPProvisioningExtensions.Core
 {
@@ -59,8 +60,6 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
         protected static string Tokenize(string input, ClientContext context)
         {
-            var result = input;
-
             var web = context.Web;
             var fields = web.Fields;
             var lists = web.Lists;
@@ -83,21 +82,21 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
             foreach (var list in lists)
             {
-                input = input.Replace(list.Id.ToString(), "{listid:" + Regex.Escape(list.Title) + "}");
+                input = input.ReplaceCaseInsensitive(list.Id.ToString(), "{listid:" + Regex.Escape(list.Title) + "}");
                 foreach (var view in list.Views)
                 {
-                    input = input.Replace(view.Id.ToString(), "{viewid:" + Regex.Escape(view.Title) + "}");
+                    input = input.ReplaceCaseInsensitive(view.Id.ToString(), "{viewid:" + Regex.Escape(view.Title) + "}");
 
                 }
             }
             foreach (var field in fields)
             {
-                input = input.Replace(field.Id.ToString(), "{fieldtitle:" + field.Id + "}");
+                input = input.ReplaceCaseInsensitive(field.Id.ToString(), "{fieldtitle:" + field.Id + "}");
             }
-            input = input.Replace(web.ServerRelativeUrl, "{siteurl}");
-            input = input.Replace(web.Id.ToString(), "{siteid}");
+            input = input.ReplaceCaseInsensitive(web.ServerRelativeUrl, "{siteurl}");
+            input = input.ReplaceCaseInsensitive(web.Id.ToString(), "{siteid}");
 
-            return result;
+            return input;
         }
 
         public abstract void Provision(ClientContext ctx, ProvisioningTemplate template, ProvisioningTemplateApplyingInformation applyingInformation, TokenParser tokenParser, PnPMonitoredScope scope, string configurationData);
