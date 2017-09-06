@@ -6,6 +6,7 @@ using OfficeDevPnP.Core.Framework.Provisioning.Extensibility;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.TokenDefinitions;
+using SoSP.PnPProvisioningExtensions.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +67,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
                     ctx.ExecuteQuery();
 
                     var data = new Data();
+                    var tokenizer = new Tokenizer(ctx);
 
                     foreach (var spct in allContentTypes)
                     {
@@ -79,7 +81,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
                             var wpData = dshpwp.Select(spWp => new WebPart
                             {
-                                Contents = Tokenize(web.GetWebPartXml(spWp.Id, docsetWelcomePage), ctx),
+                                Contents = tokenizer.Tokenize(web.GetWebPartXml(spWp.Id, docsetWelcomePage)),
                                 Zone = spWp.EnsureProperty(wp => wp.ZoneId),
                                 Order = (uint)spWp.WebPart.ZoneIndex,
                                 Title = spWp.WebPart.Title

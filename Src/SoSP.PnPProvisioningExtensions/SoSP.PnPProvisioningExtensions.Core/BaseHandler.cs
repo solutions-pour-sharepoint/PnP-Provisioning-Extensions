@@ -59,47 +59,6 @@ namespace SoSP.PnPProvisioningExtensions.Core
             }
         }
 
-        protected static string Tokenize(string input, ClientContext context)
-        {
-            var web = context.Web;
-            var fields = web.Fields;
-            var lists = web.Lists;
-
-            context.Load(web, w => w.Id, w => w.ServerRelativeUrl);
-            context.Load(
-                fields,
-                col => col.Include(f => f.InternalName, f => f.Id)
-                );
-            context.Load(
-                lists,
-                col => col.Include(
-                    l => l.Title,
-                    l => l.Id,
-                    l => l.Views.Include(
-                        v => v.Title,
-                        v => v.Id
-                    )));
-            context.ExecuteQueryRetry();
-
-            foreach (var list in lists)
-            {
-                input = input.ReplaceCaseInsensitive(list.Id.ToString(), "{listid:" + Regex.Escape(list.Title) + "}");
-                foreach (var view in list.Views)
-                {
-                    input = input.ReplaceCaseInsensitive(view.Id.ToString(), "{viewid:" + Regex.Escape(view.Title) + "}");
-
-                }
-            }
-            foreach (var field in fields)
-            {
-                input = input.ReplaceCaseInsensitive(field.Id.ToString(), "{fieldtitle:" + field.Id + "}");
-            }
-            input = input.ReplaceCaseInsensitive(web.ServerRelativeUrl, "{siteurl}");
-            input = input.ReplaceCaseInsensitive(web.Id.ToString(), "{siteid}");
-
-            return input;
-        }
-
         public abstract void Provision(ClientContext ctx, ProvisioningTemplate template, ProvisioningTemplateApplyingInformation applyingInformation, TokenParser tokenParser, PnPMonitoredScope scope, string configurationData);
         public abstract ProvisioningTemplate Extract(ClientContext ctx, ProvisioningTemplate template, ProvisioningTemplateCreationInformation creationInformation, PnPMonitoredScope scope, string configurationData);
 
