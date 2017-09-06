@@ -11,6 +11,7 @@ using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.TokenDefinitions;
 using System.Collections.Generic;
 using OfficeDevPnP.Core.Extensions;
+using SoSP.PnPProvisioningExtensions.Core.Utilities;
 
 namespace SoSP.PnPProvisioningExtensions.Core
 {
