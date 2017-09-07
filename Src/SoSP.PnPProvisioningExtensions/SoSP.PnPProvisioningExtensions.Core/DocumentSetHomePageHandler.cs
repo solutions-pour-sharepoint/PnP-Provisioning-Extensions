@@ -146,6 +146,13 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
                         var existingWebParts = web.GetWebParts(ctHp).ToList();
 
+                        // CLear the existing web parts
+                        foreach (var existing in existingWebParts)
+                        {
+                            existing.DeleteWebPart();
+                        }
+                        ctx.ExecuteQueryRetry();
+
                         foreach (var wp in ct.Value)
                         {
                             scope.LogInfo($"  Start provisioning webpart {wp.Title} in the homepage of the document set content type {spct.Name}");
