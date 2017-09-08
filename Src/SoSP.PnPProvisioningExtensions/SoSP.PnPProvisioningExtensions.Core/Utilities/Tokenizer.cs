@@ -39,7 +39,7 @@ namespace SoSP.PnPProvisioningExtensions.Core.Utilities
             {
                 input = input.ReplaceCaseInsensitive(field.Id.ToString(), "{fieldtitle:" + field.Id + "}");
             }
-            input = input.ReplaceCaseInsensitive(web.ServerRelativeUrl, "{siteurl}");
+            input = input.ReplaceCaseInsensitive(web.ServerRelativeUrl, "{site}");
             input = input.ReplaceCaseInsensitive(web.Id.ToString(), "{siteid}");
 
             return input;
