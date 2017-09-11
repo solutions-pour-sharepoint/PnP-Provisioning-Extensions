@@ -4,26 +4,40 @@ using OfficeDevPnP.Core.Framework.Provisioning.Extensibility;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.TokenDefinitions;
+using SoSP.PnPProvisioningExtensions.Core.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System;
-using SoSP.PnPProvisioningExtensions.Core.Utilities;
+using System.Runtime.Serialization;
 
 namespace SoSP.PnPProvisioningExtensions.Core
 {
     public class ListContentHandler : IProvisioningExtensibilityHandler
     {
+        [CollectionDataContract(ItemName = nameof(ListConfig))]
         public class Data : Collection<ListConfig>
         {
+            public string ToXml()
+            {
+                return SerializationHelper.SerializeDataXml(this);
+            }
         }
 
+        [DataContract]
         public class ListConfig
         {
+            [DataMember(IsRequired = true)]
             public string ListName { get; set; }
+
+            [DataMember(IsRequired = true)]
             public string KeyFieldName { get; set; }
+
+            [DataMember]
             public List<string> FieldsToExport { get; set; } = new List<string>();
-            public UpdateBehavior UpdateBehavior { get; internal set; }
+
+            [DataMember]
+            public UpdateBehavior UpdateBehavior { get; set; }
         }
 
         public ProvisioningTemplate Extract(
@@ -34,15 +48,10 @@ namespace SoSP.PnPProvisioningExtensions.Core
             string configurationData
             )
         {
-            var data = new Data
-            {
-                new ListConfig
-                {
-                    ListName = "Nature",
-                    KeyFieldName = "Title",
-                    FieldsToExport = { "Title", "Data1","Data2","Classement" }
-                }
-            };
+            if (string.IsNullOrWhiteSpace(configurationData)) { return template; }
+
+            var data = SerializationHelper.DeserializeDataJson<Data>(configurationData);
+
             if (creationInformation.HandlersToProcess.HasFlag(Handlers.Lists) && template.Lists?.Count > 0)
             {
                 var listsToExportContent = (from templateList in template.Lists
@@ -57,6 +66,8 @@ namespace SoSP.PnPProvisioningExtensions.Core
                                                 SiteList = siteList
                                             }).ToArray();
 
+                var tokenizer = new Tokenizer(ctx);
+
                 for (int i = 0; i < listsToExportContent.Length; i++)
                 {
                     var processingItem = listsToExportContent[i];
@@ -66,52 +77,32 @@ namespace SoSP.PnPProvisioningExtensions.Core
                         listsToExportContent.Length
                         );
 
-                    ExportData(processingItem.TemplateList, processingItem.SiteList, processingItem.Config);
+                    ExportData(processingItem.TemplateList, processingItem.SiteList, processingItem.Config, tokenizer);
                 }
             }
 
             return template;
         }
 
-        private static void ExportData(ListInstance templateList, List siteList, ListConfig config)
+        private static void ExportData(ListInstance templateList, List siteList, ListConfig config, Tokenizer tokenizer)
         {
-            if (!config.FieldsToExport.Contains(config.KeyFieldName))
+            if (config.FieldsToExport != null && !config.FieldsToExport.Contains(config.KeyFieldName))
             {
                 config.FieldsToExport.Add(config.KeyFieldName);
             }
-            var query = new CamlQuery
-            {
-                ViewXml = string.Concat(
-                        "<View>",
-                        "<ViewFields>",
-                        string.Concat(config.FieldsToExport.Select(f => $"<FieldRef Name='{f}' />")),
-                        "</ViewFields>",
-                        "</View>"
-                        )
-            };
 
             templateList.DataRows.UpdateBehavior = config.UpdateBehavior;
             templateList.DataRows.KeyColumn = config.KeyFieldName;
-            foreach(var item in QueryHelper.GetItems(siteList, query))
-            {
-                var templateItem = new DataRow();
 
-                foreach (var fieldToExport in config.FieldsToExport)
-                {
-                    if (item.FieldValues.ContainsKey(fieldToExport))
-                    {
-                        templateItem.Values.Add(fieldToExport, Convert.ToString(item[fieldToExport]));
-                    }
-                    else
-                    {
-                        // TODO: log Warning
-                    }
-                }
+            foreach (var item in QueryHelper.GetItemsAllFields(siteList))
+            {
+                var values = item.ToDictionary(i => i.Key, i => tokenizer.Tokenize(i.Value));
+
+                var templateItem = new DataRow(values);
 
                 templateList.DataRows.Add(templateItem);
-            }            
+            }
         }
-
 
         private static ListCollection GetSiteLists(ClientContext ctx)
         {
@@ -121,7 +112,14 @@ namespace SoSP.PnPProvisioningExtensions.Core
                 allLists,
                 lists => lists.Include(
                     l => l.Title,
-                    l => l.RootFolder.Properties
+                    l => l.RootFolder.Properties,
+                    l => l.Fields.Include(
+                        f => f.ReadOnlyField,
+                        f => f.InternalName,
+                        f => f.Id,
+                        f => f.Hidden,
+                        f => f.FieldTypeKind
+                        )
                     )
                 );
             ctx.ExecuteQuery();

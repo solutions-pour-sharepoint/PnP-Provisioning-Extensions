@@ -4,6 +4,7 @@ using OfficeDevPnP.Core.Framework.Provisioning.Extensibility;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.TokenDefinitions;
+using SoSP.PnPProvisioningExtensions.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
                     }
                 }
 
-                extensibilityHandler.Configuration = SerializeData(metadatanavigationSettings);
+                extensibilityHandler.Configuration = SerializationHelper.SerializeDataXml(metadatanavigationSettings);
                 template.ExtensibilityHandlers.Add(extensibilityHandler);
             }
 
@@ -77,7 +78,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
         {
             if (string.IsNullOrWhiteSpace(configurationData)) return;
 
-            var metadataNavigationSettings = ParseData(configurationData);
+            var metadataNavigationSettings = SerializationHelper.DeserializeDataXml<Dictionary<string,string>>(configurationData);
 
             if (metadataNavigationSettings.Count > 0)
             {

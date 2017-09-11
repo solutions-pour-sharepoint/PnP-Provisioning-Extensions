@@ -249,7 +249,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
             ctx.Load(sitePagesLibrary, list => list.Id, list => list.RootFolder.ServerRelativeUrl);
             ctx.ExecuteQueryRetry();
 
-            var data = ParseData(configurationData);
+            var data =SerializationHelper.DeserializeDataXml<Data>(configurationData);
 
             for (int i = 0; i < data.Count; i++)
             {

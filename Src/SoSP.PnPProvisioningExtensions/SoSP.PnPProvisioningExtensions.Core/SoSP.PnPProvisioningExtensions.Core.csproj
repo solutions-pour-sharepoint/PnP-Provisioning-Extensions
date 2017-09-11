@@ -254,7 +254,9 @@
     <Compile Include="ListContentHandler.cs" />
     <Compile Include="MetadataNavigationHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\ListItemHelper.cs" />
     <Compile Include="Utilities\QueryHelper.cs" />
+    <Compile Include="Utilities\SerializationHelper.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\Tokenizer.cs" />
     <Compile Include="Utilities\WebClientEx.cs">
