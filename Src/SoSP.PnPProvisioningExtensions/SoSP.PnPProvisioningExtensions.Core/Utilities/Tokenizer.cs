@@ -1,6 +1,5 @@
 ﻿using Microsoft.SharePoint.Client;
 using System;
-using System.Text.RegularExpressions;
 
 namespace SoSP.PnPProvisioningExtensions.Core.Utilities
 {
@@ -27,10 +26,10 @@ namespace SoSP.PnPProvisioningExtensions.Core.Utilities
 
             foreach (var list in lists)
             {
-                input = input.ReplaceCaseInsensitive(list.Id.ToString(), "{listid:" + Regex.Escape(list.Title) + "}");
+                input = input.ReplaceCaseInsensitive(list.Id.ToString(), "{listid:" + list.Title + "}");
                 foreach (var view in list.Views)
                 {
-                    input = input.ReplaceCaseInsensitive(view.Id.ToString(), "{viewid:" + Regex.Escape(view.Title) + "}");
+                    input = input.ReplaceCaseInsensitive(view.Id.ToString(), "{viewid:" + view.Title + "}");
                 }
             }
             foreach (var field in fields)
