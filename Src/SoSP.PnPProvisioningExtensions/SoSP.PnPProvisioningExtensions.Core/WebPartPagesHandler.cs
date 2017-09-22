@@ -99,31 +99,36 @@ namespace SoSP.PnPProvisioningExtensions.Core
                 foreach (var page in wpPages)
                 {
                     var propertyBag = GetPropertyBag(page.File);
-                    var setupPath = (string)propertyBag["vti_setuppath"];
-                    var webPartPageTemplateStr = Path.GetFileNameWithoutExtension(setupPath).Substring(5); // 5 for spstd in spstdXX.aspx filename
-                    if (page.File.CustomizedPageStatus != CustomizedPageStatus.Uncustomized)
+                    if (propertyBag.ContainsKey("vti_setuppath")) // Unghosted pages are not yet supported
                     {
-                        continue; // Skip customized page. Not yet supported
-                    }
-                    var webRelativeFileUrl = page.File.ServerRelativeUrl.Replace(web.ServerRelativeUrl.TrimEnd('/') + '/', "");
-                    var pageData = new PageData
-                    {
-                        WebPartPageTemplate = int.Parse(webPartPageTemplateStr),
-                        Url = webRelativeFileUrl
-                    };
-
-                    foreach (var webPart in web.GetWebParts(page.File.ServerRelativeUrl))
-                    {
-                        pageData.WebParts.Add(new WebPart
+                        var setupPath = (string)propertyBag["vti_setuppath"];
+                        var webPartPageTemplateStr = Path.GetFileNameWithoutExtension(setupPath).Substring(5); // 5 for spstd in spstdXX.aspx filename
+                        if (page.File.CustomizedPageStatus != CustomizedPageStatus.Uncustomized)
                         {
-                            Contents = tokenizer.Tokenize(web.GetWebPartXml(webPart.Id, page.File.ServerRelativeUrl)),
-                            Title = webPart.WebPart.Title,
-                            Order = (uint)webPart.WebPart.ZoneIndex,
-                            Zone = webPart.EnsureProperty(wp => wp.ZoneId)
-                        });
+                            continue; // Skip customized page. Not yet supported
+                        }
+                        var webRelativeFileUrl = page.File.ServerRelativeUrl.Replace(web.ServerRelativeUrl.TrimEnd('/') + '/', "");
+                        var pageData = new PageData
+                        {
+                            WebPartPageTemplate = int.Parse(webPartPageTemplateStr),
+                            Url = webRelativeFileUrl
+                        };
+
+                        foreach (var webPart in web.GetWebParts(page.File.ServerRelativeUrl))
+                        {
+                            pageData.WebParts.Add(new WebPart
+                            {
+                                Contents = tokenizer.Tokenize(web.GetWebPartXml(webPart.Id, page.File.ServerRelativeUrl)),
+                                Title = webPart.WebPart.Title,
+                                Order = (uint)webPart.WebPart.ZoneIndex,
+                                Zone = webPart.EnsureProperty(wp => wp.ZoneId)
+                            });
+                        }
+                        data.Add(pageData);
                     }
-                    data.Add(pageData);
                 }
+
+                if (data.Count == 0) { return template; }
 
                 var extHandler = GetExtensibilityHandler(data);
 
