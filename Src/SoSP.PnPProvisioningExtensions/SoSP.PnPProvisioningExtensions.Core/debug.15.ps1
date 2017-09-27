@@ -2,7 +2,7 @@ $moduleAssembly = [System.Reflection.Assembly]::LoadFrom("$([Environment]::GetFo
 
 Import-Module -Assembly $moduleAssembly
 
-Connect-PnPOnline -CurrentCredentials http://localhost/sites/pnpsource
+Connect-PnPOnline -CurrentCredentials http://sbdev02/sites/pnpsrc03
 
 Add-Type -Path SoSP.PnPProvisioningExtensions.Core.dll
 

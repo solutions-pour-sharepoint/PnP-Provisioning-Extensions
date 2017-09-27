@@ -29,7 +29,7 @@ namespace SoSP.PnPProvisioningExtensions.Core.Utilities
             foreach (var list in lists)
             {
                 input = input.ReplaceCaseInsensitive(list.Id.ToString(), "{listid:" + Regex.Escape(list.Title) + "}");
-                foreach (var view in list.Views)
+                foreach (var view in list.Views.AsEnumerable().Where(v=>!string.IsNullOrWhiteSpace(v.Title))) // Exclude hidden views, since the Pnp engine ignore these views
                 {
                     input = input.ReplaceCaseInsensitive(view.Id.ToString(), "{viewid:" + Regex.Escape(view.Title) + "}");
 
