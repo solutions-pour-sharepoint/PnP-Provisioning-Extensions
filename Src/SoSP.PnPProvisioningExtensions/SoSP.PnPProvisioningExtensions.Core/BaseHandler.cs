@@ -17,19 +17,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
 {
     public abstract class BaseHandler<TData> : IProvisioningExtensibilityHandler
     {
-        protected static string SerializeData(TData data)
-        {
-            var serializer = new DataContractSerializer(typeof(TData));
 
-            var sb = new StringBuilder();
-
-            using (var xtw = XmlWriter.Create(sb))
-            {
-                serializer.WriteObject(xtw, data);
-            }
-
-            return sb.ToString();
-        }
 
         protected ExtensibilityHandler GetExtensibilityHandler(string data = null)
         {
@@ -45,18 +33,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
         protected ExtensibilityHandler GetExtensibilityHandler(TData data = default(TData))
         {
-            return GetExtensibilityHandler(SerializeData(data));
-        }
-
-        protected static TData ParseData(string xml)
-        {
-            var serializer = new DataContractSerializer(typeof(TData));
-
-            using (var sr = new StringReader(xml))
-            using (var xr = XmlReader.Create(sr))
-            {
-                return (TData)serializer.ReadObject(xr);
-            }
+            return GetExtensibilityHandler(SerializationHelper.SerializeDataXml(data));
         }
 
         public abstract void Provision(ClientContext ctx, ProvisioningTemplate template, ProvisioningTemplateApplyingInformation applyingInformation, TokenParser tokenParser, PnPMonitoredScope scope, string configurationData);

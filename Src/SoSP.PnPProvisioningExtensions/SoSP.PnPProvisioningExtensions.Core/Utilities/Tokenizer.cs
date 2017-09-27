@@ -1,10 +1,5 @@
 ﻿using Microsoft.SharePoint.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace SoSP.PnPProvisioningExtensions.Core.Utilities
 {
@@ -20,6 +15,9 @@ namespace SoSP.PnPProvisioningExtensions.Core.Utilities
 
         public string Tokenize(string input)
         {
+            if (input == null) return input;
+            if (input == string.Empty) return input;
+
             var web = m_Context.Web;
             var fields = web.Fields;
             var lists = web.Lists;
@@ -28,17 +26,17 @@ namespace SoSP.PnPProvisioningExtensions.Core.Utilities
 
             foreach (var list in lists)
             {
-                input = input.ReplaceCaseInsensitive(list.Id.ToString(), "{listid:" + Regex.Escape(list.Title) + "}");
+                input = input.ReplaceCaseInsensitive(list.Id.ToString(), "{listid:" + list.Title + "}");
                 foreach (var view in list.Views.AsEnumerable().Where(v=>!string.IsNullOrWhiteSpace(v.Title))) // Exclude hidden views, since the Pnp engine ignore these views
                 {
-                    input = input.ReplaceCaseInsensitive(view.Id.ToString(), "{viewid:" + Regex.Escape(view.Title) + "}");
-
+                    input = input.ReplaceCaseInsensitive(view.Id.ToString(), "{viewid:" + view.Title + "}");
                 }
             }
             foreach (var field in fields)
             {
                 input = input.ReplaceCaseInsensitive(field.Id.ToString(), "{fieldtitle:" + field.Id + "}");
             }
+            input = input.ReplaceCaseInsensitive(web.Url, "{site}");
             input = input.ReplaceCaseInsensitive(web.ServerRelativeUrl, "{site}");
             input = input.ReplaceCaseInsensitive(web.Id.ToString(), "{siteid}");
 
@@ -54,10 +52,18 @@ namespace SoSP.PnPProvisioningExtensions.Core.Utilities
                 var fields = web.Fields;
                 var lists = web.Lists;
 
-                m_Context.Load(web, w => w.Id, w => w.ServerRelativeUrl);
+                m_Context.Load(
+                    web,
+                    w => w.Id,
+                    w => w.ServerRelativeUrl,
+                    w => w.Url
+                    );
                 m_Context.Load(
                     fields,
-                    col => col.Include(f => f.InternalName, f => f.Id)
+                    col => col.Include(
+                        f => f.InternalName,
+                        f => f.Id
+                        )
                     );
                 m_Context.Load(
                     lists,

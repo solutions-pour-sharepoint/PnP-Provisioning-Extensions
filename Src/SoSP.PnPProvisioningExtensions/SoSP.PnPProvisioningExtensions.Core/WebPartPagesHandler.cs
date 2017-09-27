@@ -69,6 +69,11 @@ namespace SoSP.PnPProvisioningExtensions.Core
         {
             var web = ctx.Web;
             var sitePagesLibrary = web.GetListByUrl("SitePages");
+            if(sitePagesLibrary == null)
+            {
+                // No site pages library, skip the handler
+                return template;
+            }
             ctx.Load(sitePagesLibrary);
             ctx.Load(web, w => w.ServerRelativeUrl, w => w.Url);
             ctx.ExecuteQueryRetry();
@@ -253,7 +258,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
             ctx.Load(sitePagesLibrary, list => list.Id, list => list.RootFolder.ServerRelativeUrl);
             ctx.ExecuteQueryRetry();
 
-            var data = ParseData(configurationData);
+            var data =SerializationHelper.DeserializeDataXml<Data>(configurationData);
 
             for (int i = 0; i < data.Count; i++)
             {
