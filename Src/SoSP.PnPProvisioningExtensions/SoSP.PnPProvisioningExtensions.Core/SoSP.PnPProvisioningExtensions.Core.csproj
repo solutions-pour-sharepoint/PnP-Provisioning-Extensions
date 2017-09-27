@@ -262,6 +262,7 @@
     <Compile Include="Utilities\WebClientEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Utilities\WebPartUtilities.cs" />
     <Compile Include="WebPartPagesHandler.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,7 @@ Add-Type -Path SoSP.PnPProvisioningExtensions.Core.dll
 
 $listContentConfig = '[
 {
-    "ListName":  "Nature",
+    "ListName":  "Une liste avec espaces",
     "KeyFieldName":  "Title",
     "UpdateBehavior":  0
 }

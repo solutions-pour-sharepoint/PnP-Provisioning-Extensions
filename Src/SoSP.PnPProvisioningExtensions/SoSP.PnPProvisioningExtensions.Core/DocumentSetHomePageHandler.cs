@@ -156,11 +156,14 @@ namespace SoSP.PnPProvisioningExtensions.Core
                         foreach (var wp in ct.Value)
                         {
                             scope.LogInfo($"  Start provisioning webpart {wp.Title} in the homepage of the document set content type {spct.Name}");
+                            string webPartXml = tokenParser.ParseString(wp.Contents);
+                            webPartXml = WebPartUtilities.EnsureXsltListviewWebPartView(ctx, webPartXml, tokenParser);
+
                             var wpEntity = new WebPartEntity
                             {
                                 WebPartIndex = (int)wp.Order,
                                 WebPartTitle = tokenParser.ParseString(wp.Title),
-                                WebPartXml = tokenParser.ParseString(wp.Contents),
+                                WebPartXml = webPartXml,
                                 WebPartZone = wp.Zone
                             };
 
