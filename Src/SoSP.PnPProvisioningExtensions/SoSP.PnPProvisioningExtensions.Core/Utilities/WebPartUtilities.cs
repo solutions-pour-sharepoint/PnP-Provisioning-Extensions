@@ -34,7 +34,7 @@ namespace SoSP.PnPProvisioningExtensions.Core.Utilities
                     var list = ctx.Web.Lists.GetById(listId);
                     ctx.Load(list, l => l.Views.Include(v => v.Id));
                     ctx.ExecuteQueryRetry();
-                    var viewId = CreateView(ctx, viewDefinitionXml, list, tokenParser);
+                    var viewId = CreateView(ctx, viewDefinitionXml, list, tokenParser, true);
 
                     viewDefinitionXml.SetAttributeValue("Name", viewId);
                     viewDefinition.SetValue(viewDefinitionXml.ToString());
@@ -63,7 +63,8 @@ namespace SoSP.PnPProvisioningExtensions.Core.Utilities
             ClientContext ctx,
             XElement viewElement,
             List list,
-            TokenParser parser
+            TokenParser parser, 
+            bool hiddenView
             )
         {
             var web = ctx.Web;
@@ -266,6 +267,11 @@ namespace SoSP.PnPProvisioningExtensions.Core.Utilities
                 }
             }
 
+            if (hiddenView)
+            {
+                createdView.Hidden = hiddenView;
+                createdView.Update();
+            }
             list.Update();
             web.Context.ExecuteQueryRetry();
 
