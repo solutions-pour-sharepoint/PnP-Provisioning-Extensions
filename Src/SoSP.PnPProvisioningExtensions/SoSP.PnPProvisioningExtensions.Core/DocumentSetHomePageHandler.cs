@@ -117,7 +117,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
         {
             if (string.IsNullOrWhiteSpace(configurationData)) return;
 
-            var data = ParseData(configurationData);
+            var data =SerializationHelper.DeserializeDataXml<Data>(configurationData);
 
             if (data.Count > 0)
             {
