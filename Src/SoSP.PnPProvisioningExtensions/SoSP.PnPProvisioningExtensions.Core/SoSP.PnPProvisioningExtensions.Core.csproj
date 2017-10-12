@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" 
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <PnPCorePath Condition=" '$(PnPCorePath)' == '' ">
-    </PnPCorePath>
+    <PnPCorePath Condition=" '$(PnPCorePath)' == '' "></PnPCorePath>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2EA02B51-E561-4CD8-A29F-B679A1434113}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PnPPowerShellVersion>Online</PnPPowerShellVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,15 +31,17 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PnPPowerShellVersion>Online</PnPPowerShellVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug15|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug15\</OutputPath>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
     <DefineConstants>DEBUG;TRACE;ONPREMISES;SP2013</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PnPPowerShellVersion>2013</PnPPowerShellVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release15|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -47,6 +50,7 @@
     <DefineConstants>TRACE;ONPREMISES;SP2013</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PnPPowerShellVersion>2013</PnPPowerShellVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug16|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,6 +60,7 @@
     <DefineConstants>DEBUG;TRACE;ONPREMISES;SP2016</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PnPPowerShellVersion>2016</PnPPowerShellVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release16|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -64,13 +69,13 @@
     <DefineConstants>TRACE;ONPREMISES;SP2016</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PnPPowerShellVersion>2016</PnPPowerShellVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile></AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Choose>
     <When Condition=" '$(Configuration)' == 'debug' Or '$(Configuration)' == 'release' ">
@@ -236,7 +241,23 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
+  <ItemGroup Condition="'$(Configuration)' == 'debug' Or '$(Configuration)' == 'release'" >
+      <Reference Include="SharePointPnP.PowerShell.Online.Commands">
+        <HintPath>..\..\..\..\PnP-PowerShell\Commands\bin\$(Configuration)\SharePointPnP.PowerShell.Online.Commands.dll</HintPath>
+      </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'debug16' Or '$(Configuration)' == 'release16'" >
+      <Reference Include="SharePointPnP.PowerShell.2016.Commands">
+        <HintPath>..\..\..\..\PnP-PowerShell\Commands\bin\$(Configuration)\SharePointPnP.PowerShell.2016.Commands.dll</HintPath>
+      </Reference>
+   </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'debug15' Or '$(Configuration)' == 'release15'" >
+     <Reference Include="SharePointPnP.PowerShell.2013.Commands">
+        <HintPath>..\..\..\..\PnP-PowerShell\Commands\bin\$(Configuration)\SharePointPnP.PowerShell.2013.Commands.dll</HintPath>
+      </Reference>
+  </ItemGroup>
   <ItemGroup>
+
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -278,7 +299,7 @@
     <StartProgram>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</StartProgram>
     <StartArguments>-nologo -noexit -executionpolicy bypass -file debug.ps1</StartArguments>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug15|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '$(Configuration)|AnyCPU'">
     <StartAction>Program</StartAction>
     <StartProgram>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</StartProgram>
     <StartArguments>-nologo -noexit -executionpolicy bypass -file ..\..\debug.15.ps1</StartArguments>
