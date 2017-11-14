@@ -2,10 +2,8 @@
 using OfficeDevPnP.Core;
 using OfficeDevPnP.Core.Diagnostics;
 using OfficeDevPnP.Core.Entities;
-using OfficeDevPnP.Core.Framework.Provisioning.Extensibility;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
-using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.TokenDefinitions;
 using SoSP.PnPProvisioningExtensions.Core.Utilities;
 using System;
 using System.Collections.Generic;
@@ -72,7 +70,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
                     foreach (var spct in allContentTypes)
                     {
                         if (
-                            spct.Id.StringValue.StartsWith(BuiltInContentTypeId.DocumentSet, StringComparison.Ordinal) 
+                            spct.Id.StringValue.StartsWith(BuiltInContentTypeId.DocumentSet, StringComparison.Ordinal)
                             && template.ContentTypes.Any(tct => tct.Id == spct.Id.StringValue))
                         {
                             var docsetWelcomePage = GetWelcomePage(web, spct);
@@ -99,12 +97,11 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
                 return template;
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 throw;
             }
         }
-        
 
         public override void Provision(
             ClientContext ctx,
@@ -117,7 +114,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
         {
             if (string.IsNullOrWhiteSpace(configurationData)) return;
 
-            var data =SerializationHelper.DeserializeDataXml<Data>(configurationData);
+            var data = SerializationHelper.DeserializeDataXml<Data>(configurationData);
 
             if (data.Count > 0)
             {

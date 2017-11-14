@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" 
-  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <PnPCorePath Condition=" '$(PnPCorePath)' == '' "></PnPCorePath>
+    <PnPCorePath Condition=" '$(PnPCorePath)' == '' ">
+    </PnPCorePath>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2EA02B51-E561-4CD8-A29F-B679A1434113}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -75,7 +75,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile></AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Choose>
     <When Condition=" '$(Configuration)' == 'debug' Or '$(Configuration)' == 'release' ">
@@ -241,23 +242,22 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
-  <ItemGroup Condition="'$(Configuration)' == 'debug' Or '$(Configuration)' == 'release'" >
-      <Reference Include="SharePointPnP.PowerShell.Online.Commands">
-        <HintPath>..\..\..\..\PnP-PowerShell\Commands\bin\$(Configuration)\SharePointPnP.PowerShell.Online.Commands.dll</HintPath>
-      </Reference>
+  <ItemGroup Condition="'$(Configuration)' == 'debug' Or '$(Configuration)' == 'release'">
+    <Reference Include="SharePointPnP.PowerShell.Online.Commands">
+      <HintPath>..\..\..\..\PnP-PowerShell\Commands\bin\$(Configuration)\SharePointPnP.PowerShell.Online.Commands.dll</HintPath>
+    </Reference>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'debug16' Or '$(Configuration)' == 'release16'" >
-      <Reference Include="SharePointPnP.PowerShell.2016.Commands">
-        <HintPath>..\..\..\..\PnP-PowerShell\Commands\bin\$(Configuration)\SharePointPnP.PowerShell.2016.Commands.dll</HintPath>
-      </Reference>
-   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'debug15' Or '$(Configuration)' == 'release15'" >
-     <Reference Include="SharePointPnP.PowerShell.2013.Commands">
-        <HintPath>..\..\..\..\PnP-PowerShell\Commands\bin\$(Configuration)\SharePointPnP.PowerShell.2013.Commands.dll</HintPath>
-      </Reference>
+  <ItemGroup Condition="'$(Configuration)' == 'debug16' Or '$(Configuration)' == 'release16'">
+    <Reference Include="SharePointPnP.PowerShell.2016.Commands">
+      <HintPath>..\..\..\..\PnP-PowerShell\Commands\bin\$(Configuration)\SharePointPnP.PowerShell.2016.Commands.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'debug15' Or '$(Configuration)' == 'release15'">
+    <Reference Include="SharePointPnP.PowerShell.2013.Commands">
+      <HintPath>..\..\..\..\PnP-PowerShell\Commands\bin\$(Configuration)\SharePointPnP.PowerShell.2013.Commands.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -275,6 +275,7 @@
     <Compile Include="ListContentHandler.cs" />
     <Compile Include="MetadataNavigationHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchNavigationHandler.cs" />
     <Compile Include="Utilities\ListItemHelper.cs" />
     <Compile Include="Utilities\QueryHelper.cs" />
     <Compile Include="Utilities\SerializationHelper.cs" />
