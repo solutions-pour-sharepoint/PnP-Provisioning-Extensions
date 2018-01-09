@@ -40,7 +40,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
                 {
                     if (list.PropertyBagContainsKey(CLIENT_MOSS_METADATANAVIGATIONSETTINGS))
                     {
-                        scope.LogInfo("Exporting MetadataNavigationSettings from list " + list.Title);
+                        scope.LogInfo("Exporting MetadataNavigationSettings from list {0}", list.Title);
                         metadatanavigationSettings.Add(list.Title, list.GetPropertyBagValueString(CLIENT_MOSS_METADATANAVIGATIONSETTINGS, null));
                     }
                 }
@@ -85,11 +85,12 @@ namespace SoSP.PnPProvisioningExtensions.Core
                 var allLists = GetSiteLists(ctx);
                 foreach (var listName in metadataNavigationSettings.Keys)
                 {
-                    var propertyValue = tokenParser.ParseString(metadataNavigationSettings[listName]);
-                    var list = allLists.FirstOrDefault(l => l.Title == listName);
+                    var actualListName = tokenParser.ParseString(listName);
+                    var propertyValue = tokenParser.ParseString(metadataNavigationSettings[actualListName]);
+                    var list = allLists.FirstOrDefault(l => l.Title == actualListName);
                     list.SetPropertyBagValue(CLIENT_MOSS_METADATANAVIGATIONSETTINGS, propertyValue);
                     list.Update();
-                    scope.LogInfo("Imported MetadataNavigationSettings to list " + list.Title);
+                    scope.LogInfo("Imported MetadataNavigationSettings to list {0}", list.Title);
                 }
                 ctx.ExecuteQuery();
             }

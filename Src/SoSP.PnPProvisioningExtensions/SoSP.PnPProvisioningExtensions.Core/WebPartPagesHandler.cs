@@ -3,16 +3,15 @@ using OfficeDevPnP.Core;
 using OfficeDevPnP.Core.Diagnostics;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
+using OfficeDevPnP.Core.Utilities;
 using SoSP.PnPProvisioningExtensions.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Web;
-using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using File = Microsoft.SharePoint.Client.File;
@@ -69,7 +68,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
         {
             var web = ctx.Web;
             var sitePagesLibrary = web.GetListByUrl("SitePages");
-            if(sitePagesLibrary == null)
+            if (sitePagesLibrary == null)
             {
                 // No site pages library, skip the handler
                 return template;
@@ -258,7 +257,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
             ctx.Load(sitePagesLibrary, list => list.Id, list => list.RootFolder.ServerRelativeUrl);
             ctx.ExecuteQueryRetry();
 
-            var data =SerializationHelper.DeserializeDataXml<Data>(configurationData);
+            var data = SerializationHelper.DeserializeDataXml<Data>(configurationData);
 
             for (int i = 0; i < data.Count; i++)
             {
@@ -278,39 +277,37 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
                 foreach (var webPart in webPartPage.WebParts)
                 {
-                    var webPartXml = tokenParser.ParseString(webPart.Contents);
+                    try
+                    {
+                        var webPartXml = tokenParser.ParseString(webPart.Contents);
 
-                    webPartXml = WebPartUtilities.EnsureXsltListviewWebPartView(ctx, webPartXml, tokenParser);
-                    
-                    web.AddWebPartToWebPartPage(
-                        new OfficeDevPnP.Core.Entities.WebPartEntity
-                        {
-                            WebPartIndex = (int)webPart.Order,
-                            WebPartTitle = webPart.Title,
-                            WebPartXml = webPartXml,
-                            WebPartZone = webPart.Zone
-                        },
-                        webPartPage.Url
-                    );
+                        webPartXml = WebPartUtilities.EnsureXsltListviewWebPartView(ctx, webPartXml, tokenParser);
+
+                        web.AddWebPartToWebPartPage(
+                            new OfficeDevPnP.Core.Entities.WebPartEntity
+                            {
+                                WebPartIndex = (int)webPart.Order,
+                                WebPartTitle = webPart.Title,
+                                WebPartXml = webPartXml,
+                                WebPartZone = webPart.Zone
+                            },
+                            webPartPage.Url
+                        );
+                    }
+                    catch (Exception exc)
+                    {
+                        applyingInformation.MessagesDelegate?.Invoke($"There was an error importing a web part: {webPart.Title} on page {webPartPage.Url}.\nError: {exc}", ProvisioningMessageType.Warning);
+                    }
                 }
             }
         }
-
 
         private static string ExecuteBatchMessage(Web web, string batchMessage)
         {
             var requestUrl = web.Url.TrimEnd('/') + "/_vti_bin/owssvr.dll?Cmd=DisplayPost";
 
-            using (var wc = new WebClientEx())
+            using (var wc = new SharePointWebClient(web.Context))
             {
-                if (web.Context.Credentials != null)
-                {
-                    wc.Credentials = web.Context.Credentials;
-                }
-                else
-                {
-                    wc.UseDefaultCredentials = true;
-                }
                 wc.Headers.Add(HttpRequestHeader.Accept, "auth/sicily");
                 wc.Headers.Add(HttpRequestHeader.ContentType, "application/xml");
                 wc.Headers.Add("X-Vermeer-Content-Type", "application/xml");

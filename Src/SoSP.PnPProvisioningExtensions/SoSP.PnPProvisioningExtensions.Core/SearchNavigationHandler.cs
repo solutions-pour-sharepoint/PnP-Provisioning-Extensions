@@ -9,6 +9,7 @@ using NavigationNode = OfficeDevPnP.Core.Framework.Provisioning.Model.Navigation
 using NavigationNodeCollection = OfficeDevPnP.Core.Framework.Provisioning.Model.NavigationNodeCollection;
 using System;
 using OfficeDevPnP.Core.Enums;
+using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.Extensions;
 
 namespace SoSP.PnPProvisioningExtensions.Core
 {
@@ -95,12 +96,6 @@ namespace SoSP.PnPProvisioningExtensions.Core
                     parser.ParseString(node.Title)
                     );
 
-#if !SP2013
-                if (node.Title.ContainsResourceToken())
-                {
-                    navNode.LocalizeNavigationNode(web, node.Title, parser, scope);
-                }
-#endif
             }
         }
     }
