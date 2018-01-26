@@ -126,7 +126,9 @@ namespace SoSP.PnPProvisioningExtensions.Core
                                 Contents = tokenizer.Tokenize(web.GetWebPartXml(webPart.Id, page.File.ServerRelativeUrl)),
                                 Title = webPart.WebPart.Title,
                                 Order = (uint)webPart.WebPart.ZoneIndex,
+#if !SP2016
                                 Zone = webPart.EnsureProperty(wp => wp.ZoneId)
+#endif
                             });
                         }
                         data.Add(pageData);

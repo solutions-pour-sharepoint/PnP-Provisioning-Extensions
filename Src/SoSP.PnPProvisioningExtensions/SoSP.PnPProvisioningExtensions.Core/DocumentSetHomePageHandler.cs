@@ -76,11 +76,13 @@ namespace SoSP.PnPProvisioningExtensions.Core
                             var docsetWelcomePage = GetWelcomePage(web, spct);
 
                             var dshpwp = web.GetWebParts(docsetWelcomePage);
-
+                            
                             var wpData = dshpwp.Select(spWp => new WebPart
                             {
                                 Contents = tokenizer.Tokenize(web.GetWebPartXml(spWp.Id, docsetWelcomePage)),
+#if !SP2016
                                 Zone = spWp.EnsureProperty(wp => wp.ZoneId),
+#endif
                                 Order = (uint)spWp.WebPart.ZoneIndex,
                                 Title = spWp.WebPart.Title
                             });
