@@ -342,6 +342,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
   <SetVar Name=""ID"">New</SetVar>
   <SetVar Name=""Cmd"">NewWebPage</SetVar>
   <SetVar Name=""Type"">WebPartPage</SetVar>
+  <SetVar Name=""ContentTypeId"">0x01010901</SetVar>
  </Method>";
     }
 }
