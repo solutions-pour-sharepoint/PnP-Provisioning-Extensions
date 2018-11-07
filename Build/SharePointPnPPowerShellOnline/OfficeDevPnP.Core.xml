@@ -851,6 +851,11 @@
               Looks up a localized string similar to File {0} was not saved to site {1}, library {2}. Error = {3}.
             </summary>
         </member>
+        <member name="P:OfficeDevPnP.Core.CoreResources.Provisioning_Extensibility_Invalid_Handler_Implementation">
+            <summary>
+              Looks up a localized string similar to The extensibility handler does not implement a supported extensibility handler interface. Check if the extensibility handler references the same version of OfficeDevPnP currently in use (Version {0}). Assembly: {1}. Type: {2}.
+            </summary>
+        </member>
         <member name="P:OfficeDevPnP.Core.CoreResources.Provisioning_Extensibility_Pipeline_BeforeInvocation">
             <summary>
               Looks up a localized string similar to Provisioning extensibility pipeline preparing to invoke, Assembly: {0}. Type {1}.
@@ -5305,6 +5310,31 @@
             <param name="target">Target enumeration</param>
             <returns>Wether the two enumerations are deep equal</returns>
         </member>
+        <member name="T:OfficeDevPnP.Core.Framework.Graph.GraphUtility">
+            <summary>
+            Utility class to perform Graph operations.
+            </summary>
+        </member>
+        <member name="M:OfficeDevPnP.Core.Framework.Graph.GraphUtility.CreateGraphClient(System.String,System.Int32,System.Int32)">
+            <summary>
+             Creates a new GraphServiceClient instance using a custom PnPHttpProvider
+            </summary>
+            <param name="accessToken">The OAuth 2.0 Access Token to configure the HTTP bearer Authorization Header</param>
+            <param name="retryCount">Number of times to retry the request in case of throttling</param>
+            <param name="delay">Milliseconds to wait before retrying the request.</param>
+            <returns></returns>
+        </member>
+        <member name="M:OfficeDevPnP.Core.Framework.Graph.GraphUtility.InviteGuestUser(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            This method sends an Azure guest user invitation to the provided email address.
+            </summary>
+            <param name="accessToken">The OAuth 2.0 Access Token to use for invoking the Microsoft Graph</param>
+            <param name="guestUserEmail">Email of the user to whom the invite must be sent</param>
+            <param name="redirectUri">URL where the user will be redirected after the invite is accepted.</param>
+            <param name="customizedMessage">Customized email message to be sent in the invitation email.</param>
+            <param name="guestUserDisplayName">Display name of the Guest user.</param>
+            <returns></returns>
+        </member>
         <member name="T:OfficeDevPnP.Core.Framework.Graph.Model.DirectorySetting">
             <summary>
             Represents a DirectorySetting for Azure AD
@@ -5480,7 +5510,7 @@
             <param name="delay">Milliseconds to wait before retrying the request. The delay will be increased (doubled) every retry</param>
             <returns>The just created Office 365 Group</returns>
         </member>
-        <member name="M:OfficeDevPnP.Core.Framework.Graph.UnifiedGroupsUtility.UpdateUnifiedGroup(System.String,System.String,System.Int32,System.Int32,System.String,System.String,System.String[],System.String[],System.IO.Stream,System.Boolean)">
+        <member name="M:OfficeDevPnP.Core.Framework.Graph.UnifiedGroupsUtility.UpdateUnifiedGroup(System.String,System.String,System.Int32,System.Int32,System.String,System.String,System.String[],System.String[],System.IO.Stream,System.Nullable{System.Boolean})">
             <summary>
             Updates the logo, members or visibility state of an Office 365 Group
             </summary>
@@ -5559,6 +5589,7 @@
             <param name="includeSite">Defines whether to return details about the Modern SharePoint Site backing the group. Default is true.</param>
             <param name="retryCount">Number of times to retry the request in case of throttling</param>
             <param name="delay">Milliseconds to wait before retrying the request. The delay will be increased (doubled) every retry</param>
+            <param name="includeClassification">Defines whether or not to return details about the Modern Site classification value.</param>
             <returns>An IList of SiteEntity objects</returns>
         </member>
         <member name="M:OfficeDevPnP.Core.Framework.Graph.UnifiedGroupsUtility.GetUnifiedGroupMembers(OfficeDevPnP.Core.Entities.UnifiedGroupEntity,System.String,System.Int32,System.Int32)">
@@ -28502,6 +28533,26 @@
             <param name="clientId">Client ID of the app</param>
             <param name="clientSecret">Client Secret of the app</param>
         </member>
+        <member name="M:OfficeDevPnP.Core.Framework.TimerJobs.TimerJob.UseAppOnlyAuthentication(System.String,System.String,System.Security.SecureString,System.String)">
+            <summary>
+            Prepares the timerjob to operate against SharePoint on-premises with app-only client Id and certificate in High Trust mode. 
+            Sets AuthenticationType to AuthenticationType.AppOnly
+            </summary>
+            <param name="clientId">Client ID of the app</param>
+            <param name="certificatePath">Path of the Certificate file</param>
+            <param name="certificatePassword">Password of the Certificate</param>
+            <param name="certificateIssuerId">The Issuer ID of the certificate</param>
+        </member>
+        <member name="M:OfficeDevPnP.Core.Framework.TimerJobs.TimerJob.UseAppOnlyAuthentication(System.String,System.String,System.String,System.String)">
+            <summary>
+            Prepares the timerjob to operate against SharePoint on-premises with app-only client Id and certificate in High Trust mode. 
+            Sets AuthenticationType to AuthenticationType.AppOnly
+            </summary>
+            <param name="clientId">Client ID of the app</param>
+            <param name="certificatePath">Path of the Certificate file</param>
+            <param name="certificatePassword">Password of the Certificate</param>
+            <param name="certificateIssuerId">The Issuer ID of the certificate</param>
+        </member>
         <member name="M:OfficeDevPnP.Core.Framework.TimerJobs.TimerJob.UseAzureADAppOnlyAuthentication(System.String,System.String,System.String,System.String)">
             <summary>
             Prepares the TimerJob to operate against SharePoint Only with Azure AD app-only credentials. Sets AuthenticationType 
@@ -28916,6 +28967,11 @@
         <member name="P:OfficeDevPnP.Core.Pages.CanvasControl.DataVersion">
             <summary>
             The internal storage version used for this control
+            </summary>
+        </member>
+        <member name="P:OfficeDevPnP.Core.Pages.CanvasControl.CanvasDataVersion">
+            <summary>
+            The internal canvas storage version used
             </summary>
         </member>
         <member name="P:OfficeDevPnP.Core.Pages.CanvasControl.CanvasControlData">
@@ -29498,8 +29554,8 @@
         </member>
         <member name="P:OfficeDevPnP.Core.Pages.ClientSidePageHeader.ImageServerRelativeUrl">
             <summary>
-            Server relative link to page header image, set to null for default header image. 
-            Note: image needs to reside in the current site 
+            Server relative link to page header image, set to null for default header image.
+            Note: image needs to reside in the current site
             </summary>
         </member>
         <member name="P:OfficeDevPnP.Core.Pages.ClientSidePageHeader.TranslateX">
@@ -29567,7 +29623,7 @@
         </member>
         <member name="M:OfficeDevPnP.Core.Pages.ClientSidePageHeader.NoHeader(System.String,OfficeDevPnP.Core.Pages.ClientSidePageHeaderTitleAlignment)">
             <summary>
-            Returns the header value to set a "no header" 
+            Returns the header value to set a "no header"
             </summary>
             <param name="pageTitle">Title of the page</param>
             <param name="titleAlignment">Left align or center the title</param>
@@ -29575,7 +29631,7 @@
         </member>
         <member name="M:OfficeDevPnP.Core.Pages.ClientSidePageHeader.NoHeader(System.String)">
             <summary>
-            Returns the header value to set a "no header" 
+            Returns the header value to set a "no header"
             </summary>
             <param name="pageTitle">Title of the page</param>
             <returns>Header html value that indicates "no header"</returns>
@@ -29972,6 +30028,11 @@
         <member name="F:OfficeDevPnP.Core.Pages.DefaultClientSideWebParts.ClientWebPart">
             <summary>
             Web part to host SharePoint Add-In parts
+            </summary>
+        </member>
+        <member name="F:OfficeDevPnP.Core.Pages.DefaultClientSideWebParts.PowerApps">
+            <summary>
+            Web part to host PowerApps
             </summary>
         </member>
         <member name="T:OfficeDevPnP.Core.Pages.PromotedState">
@@ -31399,7 +31460,7 @@
         </member>
         <member name="P:OfficeDevPnP.Core.Sites.SiteCreationInformation.Description">
             <summary>
-            The Guid of the site design to be used. If specified will override the SiteDesign property
+            The description of the site to be created.
             </summary>
         </member>
         <member name="P:OfficeDevPnP.Core.Sites.SiteCreationInformation.Classification">
@@ -34363,6 +34424,13 @@
             <param name="siteUrl">Site URL to be used for cloned ClientContext</param>
             <returns>A ClientContext object created for the passed site URL</returns>
         </member>
+        <member name="M:Microsoft.SharePoint.Client.ClientContextExtensions.PendingRequestCount(Microsoft.SharePoint.Client.ClientRuntimeContext)">
+            <summary>
+            Returns the number of pending requests
+            </summary>
+            <param name="clientContext">Client context to check the pending requests for</param>
+            <returns>The number of pending requests</returns>
+        </member>
         <member name="M:Microsoft.SharePoint.Client.ClientContextExtensions.GetSiteCollectionContext(Microsoft.SharePoint.Client.ClientRuntimeContext)">
             <summary>
             Gets a site collection context for the passed web. This site collection client context uses the same credentials
@@ -35653,13 +35721,14 @@
             <param name="searchInSiteHierarchy">Searches accross all content types in the site up to the root site</param>
             <returns>Content type object or null if was not found</returns>
         </member>
-        <member name="M:Microsoft.SharePoint.Client.FieldAndContentTypeExtensions.GetContentTypeById(Microsoft.SharePoint.Client.Web,System.String,System.Boolean)">
+        <member name="M:Microsoft.SharePoint.Client.FieldAndContentTypeExtensions.GetContentTypeById(Microsoft.SharePoint.Client.Web,System.String,System.Boolean,System.Linq.Expressions.Expression{System.Func{Microsoft.SharePoint.Client.ContentTypeCollection,System.Object}}[])">
             <summary>
             Return content type by Id
             </summary>
             <param name="web">Web to be processed</param>
             <param name="contentTypeId">Complete ID for the content type</param>
             <param name="searchInSiteHierarchy">Searches accross all content types in the site up to the root site</param>
+            <param name="retrievals">Optional list of retrievals</param>
             <returns>Content type object or null if was not found</returns>
         </member>
         <member name="M:Microsoft.SharePoint.Client.FieldAndContentTypeExtensions.GetContentTypeByName(Microsoft.SharePoint.Client.List,System.String)">
@@ -36733,7 +36802,35 @@
             <param name="web">Web to operate on</param>
             <returns>True if a policy has been applied, false otherwise</returns>
         </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.HasSitePolicyAppliedAsync(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Does this web have a site policy applied?
+            </summary>
+            <param name="web">Web to operate on</param>
+            <returns>True if a policy has been applied, false otherwise</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.HasSitePolicyAppliedImplementation(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Does this web have a site policy applied?
+            </summary>
+            <param name="web">Web to operate on</param>
+            <returns>True if a policy has been applied, false otherwise</returns>
+        </member>
         <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSiteExpirationDate(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Gets the site expiration date
+            </summary>
+            <param name="web">Web to operate on</param>
+            <returns>DateTime value holding the expiration date, DateTime.MinValue in case there was no policy applied</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSiteExpirationDateAsync(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Gets the site expiration date
+            </summary>
+            <param name="web">Web to operate on</param>
+            <returns>DateTime value holding the expiration date, DateTime.MinValue in case there was no policy applied</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSiteExpirationDateImplementation(Microsoft.SharePoint.Client.Web)">
             <summary>
             Gets the site expiration date
             </summary>
@@ -36747,7 +36844,35 @@
             <param name="web">Web to operate on</param>
             <returns>DateTime value holding the closure date, DateTime.MinValue in case there was no policy applied</returns>
         </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSiteCloseDateAsync(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Gets the site closure date
+            </summary>
+            <param name="web">Web to operate on</param>
+            <returns>DateTime value holding the closure date, DateTime.MinValue in case there was no policy applied</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSiteCloseDateImplementation(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Gets the site closure date
+            </summary>
+            <param name="web">Web to operate on</param>
+            <returns>DateTime value holding the closure date, DateTime.MinValue in case there was no policy applied</returns>
+        </member>
         <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSitePolicies(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Gets a list of the available site policies
+            </summary>
+            <param name="web">Web to operate on</param>
+            <returns>A list of <see cref="T:OfficeDevPnP.Core.Entities.SitePolicyEntity"/> objects</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSitePoliciesAsync(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Gets a list of the available site policies
+            </summary>
+            <param name="web">Web to operate on</param>
+            <returns>A list of <see cref="T:OfficeDevPnP.Core.Entities.SitePolicyEntity"/> objects</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSitePoliciesImplementation(Microsoft.SharePoint.Client.Web)">
             <summary>
             Gets a list of the available site policies
             </summary>
@@ -36761,7 +36886,37 @@
             <param name="web">Web to operate on</param>
             <returns>A <see cref="T:OfficeDevPnP.Core.Entities.SitePolicyEntity"/> object holding the applied policy</returns>
         </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetAppliedSitePolicyAsync(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Gets the site policy that currently is applied
+            </summary>
+            <param name="web">Web to operate on</param>
+            <returns>A <see cref="T:OfficeDevPnP.Core.Entities.SitePolicyEntity"/> object holding the applied policy</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetAppliedSitePolicyImplementation(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Gets the site policy that currently is applied
+            </summary>
+            <param name="web">Web to operate on</param>
+            <returns>A <see cref="T:OfficeDevPnP.Core.Entities.SitePolicyEntity"/> object holding the applied policy</returns>
+        </member>
         <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSitePolicyByName(Microsoft.SharePoint.Client.Web,System.String)">
+            <summary>
+            Gets the site policy with the given name
+            </summary>
+            <param name="web">Web to operate on</param>
+            <param name="sitePolicy">Site policy to fetch</param>
+            <returns>A <see cref="T:OfficeDevPnP.Core.Entities.SitePolicyEntity"/> object holding the fetched policy</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSitePolicyByNameAsync(Microsoft.SharePoint.Client.Web,System.String)">
+            <summary>
+            Gets the site policy with the given name
+            </summary>
+            <param name="web">Web to operate on</param>
+            <param name="sitePolicy">Site policy to fetch</param>
+            <returns>A <see cref="T:OfficeDevPnP.Core.Entities.SitePolicyEntity"/> object holding the fetched policy</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.GetSitePolicyByNameImplementation(Microsoft.SharePoint.Client.Web,System.String)">
             <summary>
             Gets the site policy with the given name
             </summary>
@@ -36777,6 +36932,22 @@
             <param name="sitePolicy">Policy to apply</param>
             <returns>True if applied, false otherwise</returns>
         </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.ApplySitePolicyAsync(Microsoft.SharePoint.Client.Web,System.String)">
+            <summary>
+            Apply a policy to a site
+            </summary>
+            <param name="web">Web to operate on</param>
+            <param name="sitePolicy">Policy to apply</param>
+            <returns>True if applied, false otherwise</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.ApplySitePolicyImplementation(Microsoft.SharePoint.Client.Web,System.String)">
+            <summary>
+            Apply a policy to a site
+            </summary>
+            <param name="web">Web to operate on</param>
+            <param name="sitePolicy">Policy to apply</param>
+            <returns>True if applied, false otherwise</returns>
+        </member>
         <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.IsClosedBySitePolicy(Microsoft.SharePoint.Client.Web)">
             <summary>
             Check if a site is closed
@@ -36784,6 +36955,8 @@
             <param name="web">Web to operate on</param>
             <returns>True if site is closed, false otherwise</returns>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:Microsoft.SharePoint.Client.InformationManagementExtensions.IsClosedBySitePolicyAsync(Microsoft.SharePoint.Client.Web)" -->
+        <!-- Badly formed XML comment ignored for member "M:Microsoft.SharePoint.Client.InformationManagementExtensions.IsClosedBySitePolicyImplementation(Microsoft.SharePoint.Client.Web)" -->
         <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.SetClosedBySitePolicy(Microsoft.SharePoint.Client.Web)">
             <summary>
             Close a site, if it has a site policy applied and is currently not closed
@@ -36791,7 +36964,35 @@
             <param name="web"></param>
             <returns>True if site was closed, false otherwise</returns>
         </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.SetClosedBySitePolicyAsync(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Close a site, if it has a site policy applied and is currently not closed
+            </summary>
+            <param name="web"></param>
+            <returns>True if site was closed, false otherwise</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.SetClosedBySitePolicyImplementation(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Close a site, if it has a site policy applied and is currently not closed
+            </summary>
+            <param name="web"></param>
+            <returns>True if site was closed, false otherwise</returns>
+        </member>
         <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.SetOpenBySitePolicy(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Open a site, if it has a site policy applied and is currently closed
+            </summary>
+            <param name="web"></param>
+            <returns>True if site was opened, false otherwise</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.SetOpenBySitePolicyAsync(Microsoft.SharePoint.Client.Web)">
+            <summary>
+            Open a site, if it has a site policy applied and is currently closed
+            </summary>
+            <param name="web"></param>
+            <returns>True if site was opened, false otherwise</returns>
+        </member>
+        <member name="M:Microsoft.SharePoint.Client.InformationManagementExtensions.SetOpenBySitePolicyImplementation(Microsoft.SharePoint.Client.Web)">
             <summary>
             Open a site, if it has a site policy applied and is currently closed
             </summary>
@@ -40247,7 +40448,7 @@
         </member>
         <member name="M:Microsoft.SharePoint.Client.ExternalSharingExtensions.ShareDocument(Microsoft.SharePoint.Client.Web,System.String,System.String,Microsoft.SharePoint.Client.ExternalSharingDocumentOption,System.Boolean,System.String,System.Boolean)">
             <summary>
-            Abstracted methid for sharing documents just with given email address. 
+            Abstracted method for sharing documents just with given email address. 
             </summary>
             <param name="web">Web for the context used for people picker search</param>
             <param name="urlToDocument">Full URL to the file which is shared</param>
@@ -40261,7 +40462,7 @@
         </member>
         <member name="M:Microsoft.SharePoint.Client.ExternalSharingExtensions.ShareDocumentAsync(Microsoft.SharePoint.Client.Web,System.String,System.String,Microsoft.SharePoint.Client.ExternalSharingDocumentOption,System.Boolean,System.String,System.Boolean)">
             <summary>
-            Abstracted methid for sharing documents just with given email address. 
+            Abstracted method for sharing documents just with given email address. 
             </summary>
             <param name="web">Web for the context used for people picker search</param>
             <param name="urlToDocument">Full URL to the file which is shared</param>
