@@ -279,6 +279,9 @@
     <Compile Include="Utilities\ListItemHelper.cs" />
     <Compile Include="Utilities\QueryHelper.cs" />
     <Compile Include="Utilities\SerializationHelper.cs" />
+    <Compile Include="Utilities\SharePointWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\Tokenizer.cs" />
     <Compile Include="Utilities\WebClientEx.cs">

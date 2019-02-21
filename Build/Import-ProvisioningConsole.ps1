@@ -4,8 +4,7 @@ param(
     [string]$Version
 )
 
-$CurrentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$binRoot = "$CurrentDirectory\SharePointPnPPowerShell$Version"
+$binRoot = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)\SharePointPnPPowerShell$Version"
 $moduleAssembly = [System.Reflection.Assembly]::LoadFrom("$binRoot\SharePointPnP.PowerShell.$Version.Commands.dll")
 
 Import-Module -Assembly $moduleAssembly
@@ -25,6 +24,6 @@ $extHandlers = @(
 
 )
 
-Write-Host "Custom SoSP handlers available in variable $$extHandlers"
+Write-Host "Custom SoSP handlers available in variable `$extHandlers"
 
 $extHandlers | ft -AutoSize Type

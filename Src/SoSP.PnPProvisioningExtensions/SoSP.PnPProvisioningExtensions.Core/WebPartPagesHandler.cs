@@ -3,7 +3,6 @@ using OfficeDevPnP.Core;
 using OfficeDevPnP.Core.Diagnostics;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
-using OfficeDevPnP.Core.Utilities;
 using SoSP.PnPProvisioningExtensions.Core.Utilities;
 using System;
 using System.Collections.Generic;
@@ -51,7 +50,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
             {
             }
 
-            public WebPartDefinitionsList() : base()
+            public WebPartDefinitionsList()
             {
             }
         }
@@ -261,7 +260,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
             var data = SerializationHelper.DeserializeDataXml<Data>(configurationData);
 
-            for (int i = 0; i < data.Count; i++)
+            for (var i = 0; i < data.Count; i++)
             {
                 var webPartPage = data[i];
                 applyingInformation.ProgressDelegate?.Invoke($"Creating page {webPartPage.Url}", i, data.Count);
@@ -272,7 +271,7 @@ namespace SoSP.PnPProvisioningExtensions.Core
 
                 var resultXml = XElement.Parse(result);
 
-                if (!(int.TryParse((string)resultXml.Element("Result")?.Attribute("Code"), out int resultCode) && resultCode == 0))
+                if (!(int.TryParse((string)resultXml.Element("Result")?.Attribute("Code"), out var resultCode) && resultCode == 0))
                 {
                     throw new ApplicationException($"Erreur when adding page : {resultXml}");
                 }
